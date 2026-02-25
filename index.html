@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ASTU Smart Complaint System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- LOGIN SECTION -->
+    <section id="login-section">
+        <h1>ASTU Smart Complaint System</h1>
+
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+
+        <select id="role-select">
+            <option value="">Select Role</option>
+            <option value="student">Student</option>
+            <option value="staff">Staff</option>
+            <option value="admin">Admin</option>
+        </select>
+
+        <button onclick="login()">Login</button>
+    </section>
+
+
+    <!-- STUDENT DASHBOARD -->
+    <section id="student-dashboard" class="hidden">
+        <h2>Student Dashboard</h2>
+        <button onclick="logout()">Logout</button>
+
+        <div id="student-summary"></div>
+
+        <h3>Submit Complaint</h3>
+        <input type="text" id="title" placeholder="Title">
+        <input type="text" id="description" placeholder="Description">
+
+        <select id="category">
+            <option value="">Select Category</option>
+            <option>Dormitory</option>
+            <option>Laboratory</option>
+            <option>Internet</option>
+            <option>Classroom</option>
+        </select>
+
+        <button onclick="submitComplaint()">Submit</button>
+
+        <h3>Your Complaints</h3>
+        <div id="student-complaints"></div>
+    </section>
+
+
+    <!-- STAFF DASHBOARD -->
+    <section id="staff-dashboard" class="hidden">
+        <h2>Staff Dashboard</h2>
+        <button onclick="logout()">Logout</button>
+
+        <div id="staff-complaints"></div>
+    </section>
+
+
+    <!-- ADMIN DASHBOARD -->
+    <section id="admin-dashboard" class="hidden">
+        <h2>Admin Dashboard</h2>
+        <button onclick="logout()">Logout</button>
+
+        <div id="admin-summary"></div>
+        <div id="admin-complaints"></div>
+    </section>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

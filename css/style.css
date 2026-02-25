@@ -1,0 +1,33 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+}
+
+.hidden {
+    display: none;
+}
+
+section {
+    margin-top: 30px;
+}
+
+button {
+    padding: 8px 12px;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+.status-open {
+    color: orange;
+    font-weight: bold;
+}
+
+.status-in-progress {
+    color: blue;
+    font-weight: bold;
+}
+
+.status-resolved {
+    color: green;
+    font-weight: bold;
+}
