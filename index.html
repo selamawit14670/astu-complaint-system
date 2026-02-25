@@ -57,6 +57,14 @@
 <section id="staff-dashboard" class="hidden">
     <h2>Staff Dashboard</h2>
     <button onclick="logout()">Logout</button>
+    <input type="text" id="staffSearch" placeholder="Search by title, student, or category" onkeyup="searchStaff()">
+    <div>
+    <button onclick="filterByCategory('All')">All</button>
+    <button onclick="filterByCategory('Dormitory')">Dormitory</button>
+    <button onclick="filterByCategory('Laboratory')">Laboratory</button>
+    <button onclick="filterByCategory('Internet')">Internet</button>
+    <button onclick="filterByCategory('Classroom')">Classroom</button>
+</div>
     <div id="staff-complaints"></div>
 </section>
 

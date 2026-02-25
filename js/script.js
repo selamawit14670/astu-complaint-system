@@ -173,6 +173,10 @@ function renderStudent() {
 function renderStaff() {
     const container = document.getElementById("staff-complaints");
     container.innerHTML = "";
+    if (complaints.length === 0) {
+    container.innerHTML = "<p>No complaints available.</p>";
+    return;
+}
 
     complaints.forEach(c => {
         container.innerHTML += `
@@ -200,6 +204,7 @@ function renderStaff() {
 function renderAdmin() {
     const container = document.getElementById("admin-complaints");
     container.innerHTML = "";
+
 
     // ====== STATISTICS ======
     const total = complaints.length;
@@ -327,4 +332,61 @@ function renderMonthlyReport() {
             <p><strong>${month}:</strong> ${monthlyData[month]} complaints</p>
         `;
     }
+}
+function searchStaff() {
+    const searchValue = document.getElementById("staffSearch").value.toLowerCase();
+    const container = document.getElementById("staff-complaints");
+
+    container.innerHTML = "";
+
+    const filtered = complaints.filter(c =>
+        c.title.toLowerCase().includes(searchValue) ||
+        c.student.toLowerCase().includes(searchValue) ||
+        c.category.toLowerCase().includes(searchValue)
+    );
+
+    if (filtered.length === 0) {
+        container.innerHTML = "<p>No matching complaints found.</p>";
+        return;
+    }
+
+    filtered.forEach(c => {
+        container.innerHTML += `
+            <div>
+                <strong>Title:</strong> ${c.title}<br>
+                <strong>Category:</strong> ${c.category}<br>
+                <strong>Student:</strong> ${c.student}<br>
+                <strong>Status:</strong> ${c.status}
+                <hr>
+            </div>
+        `;
+    });
+}
+function filterByCategory(category) {
+
+    const container = document.getElementById("staff-complaints");
+    container.innerHTML = "";
+
+    let filtered = complaints;
+
+    if (category !== "All") {
+        filtered = complaints.filter(c => c.category === category);
+    }
+
+    if (filtered.length === 0) {
+        container.innerHTML = "<p>No complaints in this category.</p>";
+        return;
+    }
+
+    filtered.forEach(c => {
+        container.innerHTML += `
+            <div>
+                <strong>Title:</strong> ${c.title}<br>
+                <strong>Category:</strong> ${c.category}<br>
+                <strong>Student:</strong> ${c.student}<br>
+                <strong>Status:</strong> ${c.status}
+                <hr>
+            </div>
+        `;
+    });
 }
