@@ -35,3 +35,8 @@ input, select {
     padding: 6px;
     margin: 5px 0;
 }
+#categoryChart {
+    max-width: 400px;
+    max-height: 400px;
+    margin: 20px auto;
+}

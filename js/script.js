@@ -1,4 +1,4 @@
-let complaints = [];
+let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
 let currentUser = "";
 let currentRole = "";
 
@@ -19,11 +19,36 @@ function login() {
         renderAdmin();
     }
 
-    else if (role === "staff" && username === "staff" && password === "1234") {
+    else if (role === "staff") {
+
+    if (username === "dorm" && password === "1234") {
         currentRole = "staff";
-        showDashboard("staff-dashboard");
-        renderStaff();
+        currentUser = "Dormitory";
     }
+
+    else if (username === "lab" && password === "1234") {
+        currentRole = "staff";
+        currentUser = "Laboratory";
+    }
+
+    else if (username === "it" && password === "1234") {
+        currentRole = "staff";
+        currentUser = "Internet";
+    }
+
+    else if (username === "class" && password === "1234") {
+        currentRole = "staff";
+        currentUser = "Classroom";
+    }
+
+    else {
+        alert("Invalid staff credentials");
+        return;
+    }
+
+    showDashboard("staff-dashboard");
+    renderStaff();
+}
 
     else if (role === "student") {
         currentRole = "student";
@@ -138,6 +163,7 @@ function submitComplaint() {
     };
 
     complaints.push(newComplaint);
+    localStorage.setItem("complaints", JSON.stringify(complaints));
 
     document.getElementById("title").value = "";
     document.getElementById("description").value = "";
@@ -173,23 +199,25 @@ function renderStudent() {
 function renderStaff() {
     const container = document.getElementById("staff-complaints");
     container.innerHTML = "";
-    if (complaints.length === 0) {
-    container.innerHTML = "<p>No complaints available.</p>";
-    return;
-}
 
-    complaints.forEach(c => {
+    const departmentComplaints = complaints.filter(c => c.category === currentUser);
+
+    if (departmentComplaints.length === 0) {
+        container.innerHTML = "<p>No complaints available for your department.</p>";
+        return;
+    }
+
+    departmentComplaints.forEach(c => {
         container.innerHTML += `
             <div>
                 <strong>Title:</strong> ${c.title}<br>
                 <strong>Description:</strong> ${c.description}<br>
                 <strong>Category:</strong> ${c.category}<br>
-                ${c.extraInfo ? c.extraInfo + "<br>" : ""}
                 <strong>Student:</strong> ${c.student}<br>
-                ${c.fileName ? "File: " + c.fileName + "<br>" : ""}
                 <strong>Status:</strong> ${c.status}<br>
 
-                <select onchange="updateStatus(${c.id}, this.value)">
+                <select onchange="updateStatus(${c.id}, this.value)" 
+                    ${c.status === "Resolved" ? "disabled" : ""}>
                     <option>Open</option>
                     <option>In Progress</option>
                     <option>Resolved</option>
@@ -211,15 +239,19 @@ function renderAdmin() {
     const open = complaints.filter(c => c.status === "Open").length;
     const inProgress = complaints.filter(c => c.status === "In Progress").length;
     const resolved = complaints.filter(c => c.status === "Resolved").length;
+    const resolutionRate = total > 0 
+    ? ((resolved / total) * 100).toFixed(1) 
+    : 0;
 
     container.innerHTML += `
-        <h3>System Overview</h3>
-        <p><strong>Total Complaints:</strong> ${total}</p>
-        <p class="status-open">Open: ${open}</p>
-        <p class="status-in-progress">In Progress: ${inProgress}</p>
-        <p class="status-resolved">Resolved: ${resolved}</p>
-        <hr>
-    `;
+    <h3>System Overview</h3>
+    <p><strong>Total Complaints:</strong> ${total}</p>
+    <p class="status-open">Open: ${open}</p>
+    <p class="status-in-progress">In Progress: ${inProgress}</p>
+    <p class="status-resolved">Resolved: ${resolved}</p>
+    <p><strong>Resolution Rate:</strong> ${resolutionRate}%</p>
+    <hr>
+`;
 
     // ====== FILTER DROPDOWN ======
     container.innerHTML += `
@@ -236,6 +268,7 @@ function renderAdmin() {
 
     displayAdminList("All");
     renderAdminChart();
+    renderCategoryChart();
     renderMonthlyReport();
 }
 function filterAdmin(status) {
@@ -273,10 +306,30 @@ function displayAdminList(status) {
 // UPDATE STATUS
 function updateStatus(id, newStatus) {
     const complaint = complaints.find(c => c.id === id);
-    if (complaint) {
-        complaint.status = newStatus;
-        renderStaff();
+
+    if (!complaint) return;
+
+    // 🚦 Enforce workflow rules
+    if (complaint.status === "Open" && newStatus === "Resolved") {
+        alert("You must move to 'In Progress' before resolving.");
+        return;
     }
+
+    if (complaint.status === "Resolved") {
+        alert("Resolved complaints cannot be changed.");
+        return;
+    }
+
+    if (complaint.status === "In Progress" && newStatus === "Open") {
+        alert("Cannot move backward to Open.");
+        return;
+    }
+
+    complaint.status = newStatus;
+
+    localStorage.setItem("complaints", JSON.stringify(complaints));
+
+    renderStaff();
 }
 let adminChartInstance = null;
 
@@ -289,7 +342,6 @@ function renderAdminChart() {
     const ctx = document.getElementById("adminChart");
     if (!ctx) return;
 
-    // Destroy old chart before creating new one
     if (adminChartInstance) {
         adminChartInstance.destroy();
     }
@@ -301,6 +353,42 @@ function renderAdminChart() {
             datasets: [{
                 label: "Complaint Status",
                 data: [open, inProgress, resolved]
+            }]
+        },
+        options: {
+            responsive: true
+        }
+    });
+}   // ✅ CLOSE IT HERE
+
+
+// ✅ OUTSIDE the previous function
+let categoryChartInstance = null;
+
+function renderCategoryChart() {
+
+    const ctx = document.getElementById("categoryChart");
+    if (!ctx) return;
+
+    const categories = {};
+
+    complaints.forEach(c => {
+        if (!categories[c.category]) {
+            categories[c.category] = 0;
+        }
+        categories[c.category]++;
+    });
+
+    if (categoryChartInstance) {
+        categoryChartInstance.destroy();
+    }
+
+    categoryChartInstance = new Chart(ctx, {
+        type: "pie",
+        data: {
+            labels: Object.keys(categories),
+            datasets: [{
+                data: Object.values(categories)
             }]
         },
         options: {
