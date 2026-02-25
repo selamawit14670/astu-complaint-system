@@ -31,3 +31,7 @@ button {
     color: green;
     font-weight: bold;
 }
+input, select {
+    padding: 6px;
+    margin: 5px 0;
+}
