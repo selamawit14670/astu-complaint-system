@@ -51,11 +51,17 @@ function login() {
 }
 
     else if (role === "student") {
-        currentRole = "student";
-        currentUser = username;
-        showDashboard("student-dashboard");
-        renderStudent();
+
+    if (!username) {
+        alert("Enter your Student ID");
+        return;
     }
+
+    currentRole = "student";
+    currentUser = username;
+    showDashboard("student-dashboard");
+    renderStudent();
+}
 
     else {
         alert("Invalid credentials");
@@ -151,7 +157,7 @@ function submitComplaint() {
     }
 
     const newComplaint = {
-        id: complaints.length + 1,
+        id: Date.now(),
         title,
         description,
         category,
@@ -197,6 +203,7 @@ function renderStudent() {
 
 // RENDER STAFF
 function renderStaff() {
+    if (currentRole !== "staff") return;
     const container = document.getElementById("staff-complaints");
     container.innerHTML = "";
 
@@ -230,6 +237,7 @@ function renderStaff() {
 
 // RENDER ADMIN
 function renderAdmin() {
+    if (currentRole !== "admin") return;
     const container = document.getElementById("admin-complaints");
     container.innerHTML = "";
 
@@ -265,7 +273,6 @@ function renderAdmin() {
         <hr>
         <div id="admin-list"></div>
     `;
-
     displayAdminList("All");
     renderAdminChart();
     renderCategoryChart();
@@ -290,17 +297,26 @@ function displayAdminList(status) {
         return;
     }
 
-    filtered.forEach(c => {
-        listContainer.innerHTML += `
-            <div style="margin-bottom:15px;">
-                <strong>Title:</strong> ${c.title}<br>
-                <strong>Student:</strong> ${c.student}<br>
-                <strong>Category:</strong> ${c.category}<br>
-                <strong>Status:</strong> ${c.status}
-                <hr>
-            </div>
-        `;
-    });
+filtered.forEach(c => {
+    listContainer.innerHTML += `
+        <div style="margin-bottom:15px;">
+            <strong>Title:</strong> ${c.title}<br>
+            <strong>Student:</strong> ${c.student}<br>
+
+            <strong>Category:</strong>
+            <button onclick="adminDeleteComplaint(${c.id})" style="color:red;">
+                Delete
+            </button>
+            <select onchange="adminChangeCategory(${c.id}, this.value)">
+                <option value="Dormitory" ${c.category === "Dormitory" ? "selected" : ""}>Dormitory</option>
+                <option value="Laboratory" ${c.category === "Laboratory" ? "selected" : ""}>Laboratory</option>
+                <option value="Internet" ${c.category === "Internet" ? "selected" : ""}>Internet</option>
+                <option value="Classroom" ${c.category === "Classroom" ? "selected" : ""}>Classroom</option>
+            </select>
+            <br>
+        </div>
+    `;
+});
 }
 
 // UPDATE STATUS
@@ -477,4 +493,25 @@ function filterByCategory(category) {
             </div>
         `;
     });
+}
+
+// Admin: Change Category
+function adminChangeCategory(id, newCategory) {
+    const complaint = complaints.find(c => c.id === id);
+    if (!complaint) return;
+
+    complaint.category = newCategory;
+    localStorage.setItem("complaints", JSON.stringify(complaints));
+
+    renderAdmin();
+}
+
+// Admin: Delete Complaint
+function adminDeleteComplaint(id) {
+    if (!confirm("Are you sure you want to delete this complaint?")) return;
+
+    complaints = complaints.filter(c => c.id !== id);
+    localStorage.setItem("complaints", JSON.stringify(complaints));
+
+    renderAdmin();
 }
