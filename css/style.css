@@ -1,42 +1,220 @@
-body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
+/* ===== GLOBAL RESET ===== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    color: #1e293b;
+    padding: 30px;
+}
+
+/* ===== HEADINGS ===== */
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #1e3a8a;
+    
+}
+
+h2 {
+    margin-bottom: 15px;
+    color: #1e3a8a;
+}
+
+h3 {
+    margin: 20px 0 10px 0;
+    color: #334155;
+}
+
+/* ===== SECTION CARD STYLE ===== */
+section {
+    background: #ffffff;
+    padding: 25px;
+    margin-bottom: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== HIDDEN CLASS ===== */
 .hidden {
     display: none;
 }
 
-section {
-    margin-top: 30px;
+/* ===== INPUTS & SELECT ===== */
+input, select {
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 15px 0;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border 0.3s ease;
 }
 
+input:focus, select:focus {
+    outline: none;
+    border-color: #2563eb;
+}
+
+/* ===== BUTTONS ===== */
 button {
-    padding: 8px 12px;
-    margin-top: 10px;
+    background-color: #1e3a8a;
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
     cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
 }
 
+button:hover {
+    background-color: #2563eb;
+    transform: translateY(-2px);
+}
+
+button:disabled {
+    background-color: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* ===== STATUS COLORS ===== */
 .status-open {
-    color: orange;
+    color: #f59e0b;
     font-weight: bold;
 }
 
 .status-in-progress {
-    color: blue;
+    color: #3b82f6;
     font-weight: bold;
 }
 
 .status-resolved {
-    color: green;
+    color: #22c55e;
     font-weight: bold;
 }
-input, select {
-    padding: 6px;
-    margin: 5px 0;
+
+/* ===== COMPLAINT CARDS ===== */
+#student-complaints div,
+#staff-complaints div,
+#admin-list div {
+    background: #f8fafc;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 8px;
+    border-left: 5px solid #1e3a8a;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-#categoryChart {
+
+#student-complaints div:hover,
+#staff-complaints div:hover,
+#admin-list div:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== FILTER BUTTON GROUP ===== */
+#staff-dashboard div button {
+    margin-right: 8px;
+    margin-top: 10px;
+}
+
+/* ===== CANVAS CHART STYLE ===== */
+canvas {
+    margin-top: 20px;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+/* ===== MONTHLY REPORT ===== */
+#monthly-report {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f1f5f9;
+    border-radius: 8px;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    body {
+        padding: 15px;
+    }
+
+    section {
+        padding: 15px;
+    }
+}
+/* Center Login Section */
+#login-section {
     max-width: 400px;
-    max-height: 400px;
-    margin: 20px auto;
+    margin: 60px auto;
+    text-align: center;
+}
+
+#login-section h2 {
+    margin-bottom: 20px;
+}
+
+/* Make login button full width */
+#login-section button {
+    width: 100%;
+}
+h1 {
+    background: linear-gradient(to right, #1e3a8a, #2563eb);
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+}
+.status-open,
+.status-in-progress,
+.status-resolved {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.status-open {
+    background-color: #fef3c7;
+    color: #b45309;
+}
+
+.status-in-progress {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.status-resolved {
+    background-color: #dcfce7;
+    color: #166534;
+}
+#admin-dashboard p {
+    margin-bottom: 8px;
+    font-size: 15px;
+}
+
+#admin-dashboard strong {
+    color: #1e3a8a;
+}
+button[style*="color:less black"] {
+    background-color: rgb(78, 43, 158);
+    color: white;
+    margin-left: 10px;
+}
+
+button[style*="color:less black"]:hover {
+    background-color: #5726b1;
+}
+body > section {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+}
+section {
+    transition: all 0.3s ease;
 }
