@@ -125,35 +125,111 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// SUBMIT COMPLAINT
 function submitComplaint() {
 
-    const title = document.getElementById("title").value;
-    const description = document.getElementById("description").value;
+    const errorDiv = document.getElementById("form-error");
+    errorDiv.innerHTML = "";
+
+    // Remove old red borders
+    document.querySelectorAll("input").forEach(input => {
+        input.classList.remove("input-error");
+    });
+
+    const title = document.getElementById("title").value.trim();
+    const description = document.getElementById("description").value.trim();
     const category = document.getElementById("category").value;
     const fileInput = document.getElementById("fileUpload");
 
-    if (!title || !description || !category) {
-        alert("Fill all fields");
+    let hasError = false;
+
+    if (!title) {
+        document.getElementById("title").classList.add("input-error");
+        hasError = true;
+    }
+
+    if (!description) {
+        document.getElementById("description").classList.add("input-error");
+        hasError = true;
+    }
+
+    if (!category) {
+        errorDiv.innerHTML = "Please select a category.";
         return;
     }
 
     let extraInfo = "";
 
     if (category === "Dormitory") {
-        extraInfo = `Block: ${document.getElementById("block")?.value || ""}, Room: ${document.getElementById("room")?.value || ""}`;
+        const block = document.getElementById("block");
+        const room = document.getElementById("room");
+
+        if (!block.value.trim()) {
+            block.classList.add("input-error");
+            hasError = true;
+        }
+
+        if (!room.value.trim()) {
+            room.classList.add("input-error");
+            hasError = true;
+        }
+
+        extraInfo = `Block: ${block.value}, Room: ${room.value}`;
     }
 
-    if (category === "Laboratory") {
-        extraInfo = `Lab: ${document.getElementById("labName")?.value || ""}, Equipment: ${document.getElementById("equipment")?.value || ""}`;
+    else if (category === "Laboratory") {
+        const labName = document.getElementById("labName");
+        const equipment = document.getElementById("equipment");
+
+        if (!labName.value.trim()) {
+            labName.classList.add("input-error");
+            hasError = true;
+        }
+
+        if (!equipment.value.trim()) {
+            equipment.classList.add("input-error");
+            hasError = true;
+        }
+
+        extraInfo = `Lab: ${labName.value}, Equipment: ${equipment.value}`;
     }
 
-    if (category === "Internet") {
-        extraInfo = `Location: ${document.getElementById("location")?.value || ""}, Issue: ${document.getElementById("issueType")?.value || ""}`;
+    else if (category === "Internet") {
+        const location = document.getElementById("location");
+        const issueType = document.getElementById("issueType");
+
+        if (!location.value.trim()) {
+            location.classList.add("input-error");
+            hasError = true;
+        }
+
+        if (!issueType.value.trim()) {
+            issueType.classList.add("input-error");
+            hasError = true;
+        }
+
+        extraInfo = `Location: ${location.value}, Issue: ${issueType.value}`;
     }
 
-    if (category === "Classroom") {
-        extraInfo = `Building: ${document.getElementById("building")?.value || ""}, Room: ${document.getElementById("classroomNumber")?.value || ""}`;
+    else if (category === "Classroom") {
+        const building = document.getElementById("building");
+        const classroomNumber = document.getElementById("classroomNumber");
+
+        if (!building.value.trim()) {
+            building.classList.add("input-error");
+            hasError = true;
+        }
+
+        if (!classroomNumber.value.trim()) {
+            classroomNumber.classList.add("input-error");
+            hasError = true;
+        }
+
+        extraInfo = `Building: ${building.value}, Room: ${classroomNumber.value}`;
+    }
+
+    if (hasError) {
+        errorDiv.innerHTML = "Please fill all required fields before submitting.";
+        return;
     }
 
     const newComplaint = {
@@ -176,6 +252,7 @@ function submitComplaint() {
     document.getElementById("category").value = "";
     document.getElementById("fileUpload").value = "";
     document.getElementById("extra-fields").innerHTML = "";
+    errorDiv.innerHTML = "";
 
     renderStudent();
 }

@@ -201,13 +201,13 @@ h1 {
 #admin-dashboard strong {
     color: #1e3a8a;
 }
-button[style*="color:less black"] {
+button[style*="color:red"] {
     background-color: rgb(78, 43, 158);
     color: white;
     margin-left: 10px;
 }
 
-button[style*="color:less black"]:hover {
+button[style*="color:red"]:hover {
     background-color: #5726b1;
 }
 body > section {
@@ -217,4 +217,13 @@ body > section {
 }
 section {
     transition: all 0.3s ease;
+}
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin: 10px 0;
+}
+
+.input-error {
+    border: 2px solid red;
 }
