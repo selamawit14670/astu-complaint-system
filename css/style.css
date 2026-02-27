@@ -227,3 +227,51 @@ section {
 .input-error {
     border: 2px solid red;
 }
+#chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #2c3e50;
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+#chatbot-header {
+    background: #2c3e50;
+    color: white;
+    padding: 10px;
+    font-weight: bold;
+}
+
+#chatbot-messages {
+    padding: 10px;
+    height: 200px;
+    overflow-y: auto;
+    font-size: 14px;
+}
+
+#chatbot-input {
+    border: none;
+    border-top: 1px solid #ccc;
+    padding: 10px;
+}
+#categoryChart {
+    max-width: 400px;
+    max-height: 400px;
+    margin: 0 auto;
+}

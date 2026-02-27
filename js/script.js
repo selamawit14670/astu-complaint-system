@@ -89,6 +89,7 @@ function logout() {
 
 // CATEGORY DYNAMIC FIELDS
 document.addEventListener("DOMContentLoaded", function () {
+
     document.getElementById("category").addEventListener("change", function () {
 
         const category = this.value;
@@ -100,6 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <input type="text" id="block" placeholder="Block">
                 <input type="text" id="room" placeholder="Room Number">
             `;
+            sendBotMessage("You selected Dormitory. Please fill Block and Room Number.");
         }
 
         else if (category === "Laboratory") {
@@ -107,6 +109,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <input type="text" id="labName" placeholder="Lab Name">
                 <input type="text" id="equipment" placeholder="Equipment">
             `;
+            sendBotMessage("You selected Laboratory. Please fill Lab Name and Equipment.");
         }
 
         else if (category === "Internet") {
@@ -114,6 +117,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 <input type="text" id="location" placeholder="Location">
                 <input type="text" id="issueType" placeholder="Issue Type">
             `;
+            sendBotMessage("You selected Internet. Please fill Location and Issue Type.");
         }
 
         else if (category === "Classroom") {
@@ -121,8 +125,10 @@ document.addEventListener("DOMContentLoaded", function () {
                 <input type="text" id="building" placeholder="Building">
                 <input type="text" id="classroomNumber" placeholder="Classroom Number">
             `;
+            sendBotMessage("You selected Classroom. Please fill Building and Classroom Number.");
         }
     });
+
 });
 
 function submitComplaint() {
@@ -592,3 +598,141 @@ function adminDeleteComplaint(id) {
 
     renderAdmin();
 }
+
+
+// ================= CHATBOT =================
+document.addEventListener("DOMContentLoaded", function () {
+
+    let detectedCategory = "";
+    let detectedIssue = "";
+
+    const toggleBtn = document.getElementById("chatbot-toggle");
+    const chatContainer = document.getElementById("chatbot-container");
+    const chatInput = document.getElementById("chatbot-input");
+
+    function sendBotMessage(message) {
+        const chatMessages = document.getElementById("chatbot-messages");
+        if (!chatMessages) return;
+
+        chatMessages.innerHTML += `<div><strong>Bot:</strong> ${message}</div>`;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener("click", function () {
+            chatContainer.classList.toggle("hidden");
+        });
+    }
+
+    if (chatInput) {
+        chatInput.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+
+                const userMessage = this.value.trim();
+                if (!userMessage) return;
+
+                const chatMessages = document.getElementById("chatbot-messages");
+                chatMessages.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
+
+                this.value = "";
+
+                const response = getBotResponse(userMessage);
+                sendBotMessage(response);
+            }
+        });
+    }
+
+  function getBotResponse(message) {
+
+    const msg = message.toLowerCase();
+    const words = msg.split(/\s+/);
+
+    // ================= FIELD HELP (HIGHEST PRIORITY) =================
+
+    if (msg.includes("lab name") && detectedCategory === "Laboratory") {
+        return "Write the official name of the laboratory. Example: Computer Lab 1 or Chemistry Lab A.";
+    }
+
+    if (msg.includes("equipment") && detectedCategory === "Laboratory") {
+        return "Write the name of the damaged equipment. Example: Microscope, Projector, Beaker.";
+    }
+
+    if (msg.includes("location") && detectedCategory === "Internet") {
+        return "Write where the internet problem happens. Example: Block B Room 203.";
+    }
+
+    if (msg.includes("issue type") && detectedCategory === "Internet") {
+        return "Write the type of internet issue. Example: No connection, Slow speed, Router problem.";
+    }
+
+    if (msg.includes("block") && detectedCategory === "Dormitory") {
+        return "Write your dormitory block. Example: Block A.";
+    }
+
+    if (msg.includes("room") && detectedCategory === "Dormitory") {
+        return "Write your room number. Example: Room 12.";
+    }
+
+    // ===== TITLE HELP =====
+
+if (msg.includes("title")) {
+
+    if (detectedCategory === "Dormitory") {
+        return "Write a short summary of the problem. Example: 'Broken Bed - Dormitory' or 'Water Leakage in Block A'.";
+    }
+
+    if (detectedCategory === "Laboratory") {
+        return "Write a short summary of the problem. Example: 'Broken Microscope - Laboratory' or 'Projector Not Working in Lab'.";
+    }
+
+    if (detectedCategory === "Internet") {
+        return "Write a short summary of the problem. Example: 'WiFi Not Working - Internet' or 'Slow Network in Block B'.";
+    }
+
+    if (detectedCategory === "Classroom") {
+        return "Write a short summary of the problem. Example: 'Broken Chair - Classroom' or 'Projector Not Working in Room 12'.";
+    }
+
+    return "Write a short summary of your problem. Example: 'Broken Chair in Dormitory'.";
+}
+    // ===== DESCRIPTION HELP =====
+    if (msg.includes("description")) {
+        return "In the description, explain the problem in detail. Mention what happened, where exactly it happened, and any important information. Example: 'The chair in Classroom 12 has a broken leg and may cause injury to students.'";
+}
+    // ================= LOCATION DETECTION =================
+
+    if (words.includes("dorm") || words.includes("hostel")) {
+        detectedCategory = "Dormitory";
+        return "This seems to be a Dormitory issue. Please select Dormitory category.";
+    }
+
+    if (words.includes("lab") || words.includes("laboratory")) {
+        detectedCategory = "Laboratory";
+        return "This appears to be a Laboratory issue. Please select Laboratory category.";
+    }
+
+    if (words.includes("class") || words.includes("classroom")) {
+        detectedCategory = "Classroom";
+        return "This sounds like a Classroom issue. Please select Classroom category.";
+    }
+
+    if (words.includes("internet") || words.includes("wifi") || words.includes("network")) {
+        detectedCategory = "Internet";
+        return "This is an Internet issue. Please select Internet category.";
+    }
+
+    // ================= ISSUE DETECTION =================
+
+    if (msg.includes("chair") || msg.includes("table") || msg.includes("bed") || msg.includes("projector")) {
+        return "Please mention where this issue is happening (Dormitory, Classroom, Laboratory).";
+    }
+
+    if (msg.includes("broken") || msg.includes("missing") || msg.includes("not working")) {
+        return "Please mention what item has the issue and where it is happening.";
+    }
+
+    // ================= DEFAULT RESPONSE =================
+
+    return "Please describe your issue clearly and mention where it is happening.";
+}
+});
