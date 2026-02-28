@@ -201,15 +201,7 @@ h1 {
 #admin-dashboard strong {
     color: #1e3a8a;
 }
-button[style*="color:red"] {
-    background-color: rgb(78, 43, 158);
-    color: white;
-    margin-left: 10px;
-}
 
-button[style*="color:red"]:hover {
-    background-color: #5726b1;
-}
 body > section {
     max-width: 1000px;
     margin-left: auto;
@@ -274,4 +266,226 @@ section {
     max-width: 400px;
     max-height: 400px;
     margin: 0 auto;
+}
+/* ===== CHATBOT CONTAINER ===== */
+
+#chatbot-container {
+    position: fixed;
+    bottom: 80px;
+    right: 20px;
+    width: 300px;
+    height: 380px;
+    background: #ffffff;
+    border-radius: 18px;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+/* ===== HEADER ===== */
+
+#chatbot-header {
+    background: #1f2937;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+/* ===== MESSAGES AREA ===== */
+
+#chatbot-messages {
+    flex: 1;
+    padding: 12px;
+    overflow-y: auto;
+    background: #f9fafb;
+    font-size: 13px;
+}
+
+/* ===== INPUT AREA (FIXED AT BOTTOM) ===== */
+
+#chatbot-input-area {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid #e5e7eb;
+    padding: 8px;
+    background: white;
+}
+
+/* ===== INPUT FIELD ===== */
+
+#chatbot-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 13px;
+    padding: 8px;
+}
+
+/* ===== ICON SEND BUTTON ===== */
+
+#chatbot-send {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #2563eb;
+    color: white;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease;
+}
+
+#chatbot-send:hover {
+    background: #1d4ed8;
+    transform: scale(1.05);
+}
+
+/* ===== TOGGLE BUTTON ===== */
+
+#chatbot-toggle {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 12px 16px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+/* ================= CHAT BUBBLES ================= */
+
+.message {
+    max-width: 75%;
+    padding: 10px 14px;
+    margin: 6px 0;
+    border-radius: 18px;
+    font-size: 13px;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.user {
+    background: #2563eb;
+    color: white;
+    margin-left: auto;
+    border-bottom-right-radius: 5px;
+}
+
+.bot {
+    background: #e5e7eb;
+    color: #111827;
+    margin-right: auto;
+    border-bottom-left-radius: 5px;
+}
+/* ===== DARK MODE FIXED ===== */
+
+.dark-mode #chatbot-container {
+    background: #1f2937;
+}
+
+.dark-mode #chatbot-header {
+    background: #111827;
+    color: white;
+}
+
+.dark-mode #chatbot-messages {
+    background: #1f2937;
+}
+
+/* INPUT AREA */
+.dark-mode #chatbot-input-area {
+    background: #111827;
+    border-top: 1px solid #374151;
+}
+
+/* INPUT FIELD */
+.dark-mode #chatbot-input {
+    background: #111827;
+    color: white;          /* 🔥 THIS FIXES INVISIBLE TEXT */
+}
+
+.dark-mode #chatbot-input::placeholder {
+    color: #9ca3af;
+}
+/* ===== FORCE DARK MODE TEXT FIX ===== */
+
+.dark-mode #chatbot-messages {
+    color: white;
+}
+
+.dark-mode .message {
+    color: white;
+}
+
+.message {
+    color: #e4e5e9;
+    padding: 10px 14px;
+    border-radius: 15px;
+    margin: 6px 0;
+    max-width: 75%;
+    word-wrap: break-word;
+    font-size: 14px;
+}
+
+/* User bubble */
+.user {
+    background: #2563eb;
+    color: white;
+    margin-left: auto;
+    text-align: right;
+}
+
+/* Bot bubble */
+.bot {
+    background: #e5e7eb;
+    color: #111827;
+    margin-right: auto;
+}
+
+/* Dark mode */
+.dark-mode .bot {
+    background: #374151;
+    color: white;
+}
+
+.dark-mode .user {
+    background: #3b82f6;
+    color: white;
+}
+/* Password wrapper */
+.password-wrapper {
+    position: relative;
+    width: 250px;
+    margin: 10px auto;
+}
+
+.password-wrapper input {
+    width: 100%;
+    padding-right: 40px;
+}
+
+/* Eye icon */
+#togglePassword {
+    position: absolute;
+    right: 10px;
+    top: 8px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+/* Strength meter */
+#password-strength {
+    text-align: center;
+    margin-top: 5px;
+    font-weight: bold;
 }

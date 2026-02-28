@@ -2,18 +2,43 @@ let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
 let currentUser = "";
 let currentRole = "";
 
+function isStrongPassword(password) {
+    const minLength = 8;
+    const hasUpper = /[A-Z]/.test(password);
+    const hasLower = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    return (
+        password.length >= minLength &&
+        hasUpper &&
+        hasLower &&
+        hasNumber &&
+        hasSpecial
+    );
+}
+
 // LOGIN
 function login() {
     const role = document.getElementById("role").value;
     const username = document.getElementById("username").value;
     const password = document.getElementById("password").value;
 
+    const errorDiv = document.getElementById("password-error");
+
+    if (!isStrongPassword(password)) {
+        errorDiv.textContent = "Password must be 8+ chars, include uppercase, lowercase, number & symbol.";
+        return;
+    } else {
+        errorDiv.textContent = "";
+    }
+
     if (!role || !username || !password) {
         alert("Fill all fields");
         return;
     }
 
-    if (role === "admin" && username === "admin" && password === "1234") {
+    if (role === "admin" && username === "admin" && password === "Admin123##") {
         currentRole = "admin";
         showDashboard("admin-dashboard");
         renderAdmin();
@@ -21,22 +46,22 @@ function login() {
 
     else if (role === "staff") {
 
-    if (username === "dorm" && password === "1234") {
+    if (username === "dorm" && password === "Dorm123##") {
         currentRole = "staff";
         currentUser = "Dormitory";
     }
 
-    else if (username === "lab" && password === "1234") {
+    else if (username === "lab" && password === "Lab123##") {
         currentRole = "staff";
         currentUser = "Laboratory";
     }
 
-    else if (username === "it" && password === "1234") {
+    else if (username === "it" && password === "It1234##") {
         currentRole = "staff";
         currentUser = "Internet";
     }
 
-    else if (username === "class" && password === "1234") {
+    else if (username === "class" && password === "Class123##") {
         currentRole = "staff";
         currentUser = "Classroom";
     }
@@ -387,7 +412,7 @@ filtered.forEach(c => {
             <strong>Student:</strong> ${c.student}<br>
 
             <strong>Category:</strong>
-            <button onclick="adminDeleteComplaint(${c.id})" style="color:red;">
+            <button onclick="adminDeleteComplaint(${c.id})">
                 Delete
             </button>
             <select onchange="adminChangeCategory(${c.id}, this.value)">
@@ -601,48 +626,59 @@ function adminDeleteComplaint(id) {
 
 
 // ================= CHATBOT =================
+// Wait until page loads
 document.addEventListener("DOMContentLoaded", function () {
 
-    let detectedCategory = "";
-    let detectedIssue = "";
-
-    const toggleBtn = document.getElementById("chatbot-toggle");
-    const chatContainer = document.getElementById("chatbot-container");
     const chatInput = document.getElementById("chatbot-input");
+    const sendBtn = document.getElementById("chatbot-send");
+    const chatMessages = document.getElementById("chatbot-messages");
 
-    function sendBotMessage(message) {
-        const chatMessages = document.getElementById("chatbot-messages");
-        if (!chatMessages) return;
+    if (!chatInput || !sendBtn || !chatMessages) return;
 
-        chatMessages.innerHTML += `<div><strong>Bot:</strong> ${message}</div>`;
+    // Add user message
+    function addUserMessage(message) {
+        chatMessages.innerHTML += `
+            <div class="message user">${message}</div>
+        `;
         chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    if (toggleBtn) {
-        toggleBtn.addEventListener("click", function () {
-            chatContainer.classList.toggle("hidden");
-        });
+    // Add bot message
+    function sendBotMessage(message) {
+        chatMessages.innerHTML += `
+            <div class="message bot">${message}</div>
+        `;
+        chatMessages.scrollTop = chatMessages.scrollHeight;
     }
 
-    if (chatInput) {
-        chatInput.addEventListener("keypress", function (e) {
-            if (e.key === "Enter") {
+    // Handle sending
+    function handleSendMessage() {
+        const userMessage = chatInput.value.trim();
+        if (!userMessage) return;
 
-                const userMessage = this.value.trim();
-                if (!userMessage) return;
+        addUserMessage(userMessage);
+        chatInput.value = "";
 
-                const chatMessages = document.getElementById("chatbot-messages");
-                chatMessages.innerHTML += `<div><strong>You:</strong> ${userMessage}</div>`;
-
-                this.value = "";
-
-                const response = getBotResponse(userMessage);
-                sendBotMessage(response);
-            }
-        });
+        const response = getBotResponse(userMessage);
+        sendBotMessage(response);
     }
 
-  function getBotResponse(message) {
+    // ENTER key
+    chatInput.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") {
+            e.preventDefault();
+            handleSendMessage();
+        }
+    });
+
+    // SEND button
+    sendBtn.addEventListener("click", function () {
+        handleSendMessage();
+    });
+
+});
+
+    function getBotResponse(message) {
 
     const msg = message.toLowerCase();
     const words = msg.split(/\s+/);
@@ -672,6 +708,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (msg.includes("room") && detectedCategory === "Dormitory") {
         return "Write your room number. Example: Room 12.";
     }
+
 
     // ===== TITLE HELP =====
 
@@ -735,4 +772,63 @@ if (msg.includes("title")) {
 
     return "Please describe your issue clearly and mention where it is happening.";
 }
+document.addEventListener("DOMContentLoaded", function () {
+
+    const sendBtn = document.getElementById("chatbot-send");
+    const chatInput = document.getElementById("chatbot-input");
+
+    if (sendBtn && chatInput) {
+        sendBtn.addEventListener("click", function () {
+            chatInput.dispatchEvent(
+                new KeyboardEvent("keypress", {
+                    key: "Enter"
+                })
+            );
+        });
+    }
+
+});
+document.getElementById("dark-toggle").addEventListener("click", function () {
+    document.body.classList.toggle("dark-mode");
+});
+
+const passwordInput = document.getElementById("password");
+const togglePassword = document.getElementById("togglePassword");
+const strengthDisplay = document.getElementById("password-strength");
+
+/* 👁 SHOW / HIDE PASSWORD */
+togglePassword.addEventListener("click", function () {
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        togglePassword.textContent = "🙈";
+    } else {
+        passwordInput.type = "password";
+        togglePassword.textContent = "👁";
+    }
+});
+
+/* 📊 PASSWORD STRENGTH CHECK */
+passwordInput.addEventListener("input", function () {
+    const password = passwordInput.value;
+
+    let strength = 0;
+
+    if (password.length >= 8) strength++;
+    if (/[A-Z]/.test(password)) strength++;
+    if (/[a-z]/.test(password)) strength++;
+    if (/[0-9]/.test(password)) strength++;
+    if (/[!@#$%^&*]/.test(password)) strength++;
+
+    if (password.length === 0) {
+        strengthDisplay.textContent = "";
+    } else if (strength <= 2) {
+        strengthDisplay.textContent = "Weak";
+        strengthDisplay.style.color = "red";
+    } else if (strength === 3 || strength === 4) {
+        strengthDisplay.textContent = "Medium";
+        strengthDisplay.style.color = "orange";
+    } else {
+        strengthDisplay.textContent = "Strong";
+        strengthDisplay.style.color = "green";
+    }
 });
