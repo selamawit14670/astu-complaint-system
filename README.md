@@ -102,7 +102,8 @@ No backend or database is used in this version.
 
 1. Clone the repository:
    ```
-   git clone https://github.com/selamawit14670/astu-complaint-system.git
+   git clone 
+   
    ```
 
 2. Open the project folder in VS Code.

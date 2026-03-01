@@ -1,10 +1,15 @@
 let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
-let categories = JSON.parse(localStorage.getItem("categories")) || [
+let categories = JSON.parse(localStorage.getItem("categories"));
+
+if (!categories || categories.length === 0) {
+    categories = ["Dorm", "Internet", "Cafeteria"];
+    localStorage.setItem("categories", JSON.stringify(categories));
+}
     "Dormitory",
     "Laboratory",
     "Internet",
     "Classroom"
-];
+
 let staffAccounts = JSON.parse(localStorage.getItem("staffAccounts")) || {
     dormitory: "dorm123",
     internet: "net123",
@@ -909,19 +914,11 @@ function addCategory() {
     renderAdmin(); // refresh admin view
 }
 function renderCategories() {
-    const categorySelect = document.getElementById("category");
-    if (!categorySelect) return;
-
-    // Always reload categories from localStorage
-    categories = JSON.parse(localStorage.getItem("categories")) || [];
-
-    categorySelect.innerHTML = `<option value="">Select Category</option>`;
+    const select = document.getElementById("category");
+    select.innerHTML = "";
 
     categories.forEach(cat => {
-        const option = document.createElement("option");
-        option.value = cat;
-        option.textContent = cat;
-        categorySelect.appendChild(option);
+        select.innerHTML += `<option value="${cat}">${cat}</option>`;
     });
 }
 
