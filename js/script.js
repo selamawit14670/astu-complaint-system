@@ -2,14 +2,14 @@ let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
 let categories = JSON.parse(localStorage.getItem("categories"));
 
 if (!categories || categories.length === 0) {
-    categories = ["Dorm", "Internet", "Cafeteria"];
+    categories = [
+        "Dormitory",
+        "Internet",
+        "Classroom",
+        "Laboratory"
+    ];
     localStorage.setItem("categories", JSON.stringify(categories));
 }
-    "Dormitory",
-    "Laboratory",
-    "Internet",
-    "Classroom"
-
 let staffAccounts = JSON.parse(localStorage.getItem("staffAccounts")) || {
     dormitory: "dorm123",
     internet: "net123",
