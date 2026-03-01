@@ -307,6 +307,7 @@ function submitComplaint() {
 
 // RENDER STUDENT
 function renderStudent() {
+    showStudentNotifications();
     renderCategories();
     const container = document.getElementById("student-complaints");
     container.innerHTML = "";
@@ -495,6 +496,7 @@ function updateStatus(id, newStatus) {
     }
 
     complaint.status = newStatus;
+    complaint.notification = true;
 
     localStorage.setItem("complaints", JSON.stringify(complaints));
 
@@ -947,7 +949,9 @@ function renderCategoryList() {
         list.innerHTML += `
             <div>
                 ${cat}
-                <button onclick="deleteCategory('${cat}')">Delete</button>
+                <button class="delete-btn" onclick="deleteCategory('${cat}')">
+                delete
+                </button>
             </div>
         `;
     });
@@ -965,4 +969,29 @@ function deleteCategory(categoryName) {
     localStorage.setItem("complaints", JSON.stringify(complaints));
 
     renderAdmin();
+}
+
+function showStudentNotifications() {
+
+    const box = document.getElementById("student-notification-box");
+    if (!box) return;
+
+    box.innerHTML = "";
+
+    const myComplaints = complaints.filter(c =>
+        c.student === currentUser && c.notification
+    );
+
+    myComplaints.forEach(c => {
+        box.innerHTML += `
+            <div style="background:#d4edda; padding:10px; margin-bottom:10px;">
+                🔔 Your complaint "${c.title}" is now 
+                <strong>${c.status}</strong>
+            </div>
+        `;
+
+        c.notification = false;
+    });
+
+    localStorage.setItem("complaints", JSON.stringify(complaints));
 }

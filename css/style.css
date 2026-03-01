@@ -489,3 +489,20 @@ section {
     margin-top: 5px;
     font-weight: bold;
 }
+
+.delete-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+    background-color: #5242ad;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-left: 8px;
+    transition: 0.2s ease;
+}
+
+.delete-btn:hover {
+    background-color: #5242ad;
+    transform: scale(1.05);
+}
