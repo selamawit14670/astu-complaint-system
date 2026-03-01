@@ -289,6 +289,7 @@ function submitComplaint() {
         student: currentUser,
         fileName: fileInput.files[0] ? fileInput.files[0].name : "",
         date: new Date(),
+        remark: "",
     };
 
     complaints.push(newComplaint);
@@ -319,7 +320,8 @@ function renderStudent() {
                     ${c.description}<br>
                     ${c.extraInfo ? c.extraInfo + "<br>" : ""}
                     ${c.fileName ? "File: " + c.fileName + "<br>" : ""}
-                    Status: ${c.status}
+                    Status: ${c.status}<br>
+                    Remark: ${c.remark ? c.remark : "No remark yet"}
                     <hr>
                 </div>
             `;
@@ -338,26 +340,39 @@ function renderStaff() {
         container.innerHTML = "<p>No complaints available for your department.</p>";
         return;
     }
+    
 
     departmentComplaints.forEach(c => {
-        container.innerHTML += `
-            <div>
-                <strong>Title:</strong> ${c.title}<br>
-                <strong>Description:</strong> ${c.description}<br>
-                <strong>Category:</strong> ${c.category}<br>
-                <strong>Student:</strong> ${c.student}<br>
-                <strong>Status:</strong> ${c.status}<br>
+    container.innerHTML += `
+        <div>
+            <strong>Title:</strong> ${c.title}<br>
+            <strong>Description:</strong> ${c.description}<br>
+            <strong>Category:</strong> ${c.category}<br>
+            <strong>Student:</strong> ${c.student}<br>
+            <strong>Status:</strong> ${c.status}<br>
 
-                <select onchange="updateStatus(${c.id}, this.value)" 
-                    ${c.status === "Resolved" ? "disabled" : ""}>
-                    <option>Open</option>
-                    <option>In Progress</option>
-                    <option>Resolved</option>
-                </select>
-                <hr>
-            </div>
-        `;
-    });
+            <textarea id="remark-${c.id}" 
+                placeholder="Add remark here..."
+                ${c.status === "Resolved" ? "disabled" : ""}>
+                ${c.remark || ""}
+            </textarea><br>
+
+            <button onclick="saveRemark(${c.id})"
+                ${c.status === "Resolved" ? "disabled" : ""}>
+                Save Remark
+            </button>
+
+            <select onchange="updateStatus(${c.id}, this.value)" 
+                ${c.status === "Resolved" ? "disabled" : ""}>
+                <option ${c.status==="Open"?"selected":""}>Open</option>
+                <option ${c.status==="In Progress"?"selected":""}>In Progress</option>
+                <option ${c.status==="Resolved"?"selected":""}>Resolved</option>
+            </select>
+            <hr>
+        </div>
+    `;
+});
+    
 }
 
 // RENDER ADMIN
@@ -389,6 +404,7 @@ container.innerHTML += `
     <h3>Manage Categories</h3>
     <input type="text" id="new-category" placeholder="New Category Name">
     <button onclick="addCategory()">Add Category</button>
+    <div id="category-list"></div>
     <hr>
 `;
 
@@ -405,6 +421,7 @@ container.innerHTML += `
         <hr>
         <div id="admin-list"></div>
     `;
+    renderCategoryList();
     displayAdminList("All");
     renderAdminChart();
     renderCategoryChart();
@@ -904,4 +921,48 @@ function renderCategories() {
         option.textContent = cat;
         categorySelect.appendChild(option);
     });
+}
+
+function saveRemark(id) {
+
+    const complaint = complaints.find(c => c.id === id);
+    if (!complaint) return;
+
+    const remarkInput = document.getElementById(`remark-${id}`);
+    complaint.remark = remarkInput.value;
+
+    localStorage.setItem("complaints", JSON.stringify(complaints));
+
+    renderStaff();
+}
+
+function renderCategoryList() {
+
+    const list = document.getElementById("category-list");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    categories.forEach(cat => {
+        list.innerHTML += `
+            <div>
+                ${cat}
+                <button onclick="deleteCategory('${cat}')">Delete</button>
+            </div>
+        `;
+    });
+}
+
+function deleteCategory(categoryName) {
+
+    categories = categories.filter(cat => cat !== categoryName);
+    localStorage.setItem("categories", JSON.stringify(categories));
+
+    delete staffAccounts[categoryName.toLowerCase()];
+    localStorage.setItem("staffAccounts", JSON.stringify(staffAccounts));
+
+    complaints = complaints.filter(c => c.category !== categoryName);
+    localStorage.setItem("complaints", JSON.stringify(complaints));
+
+    renderAdmin();
 }
