@@ -1,4 +1,16 @@
 let complaints = JSON.parse(localStorage.getItem("complaints")) || [];
+let categories = JSON.parse(localStorage.getItem("categories")) || [
+    "Dormitory",
+    "Laboratory",
+    "Internet",
+    "Classroom"
+];
+let staffAccounts = JSON.parse(localStorage.getItem("staffAccounts")) || {
+    dormitory: "dorm123",
+    internet: "net123",
+    laboratory: "lab123",
+    classroom: "class123"
+};
 let currentUser = "";
 let currentRole = "";
 
@@ -100,6 +112,10 @@ function showDashboard(id) {
     document.getElementById("admin-dashboard").classList.add("hidden");
 
     document.getElementById(id).classList.remove("hidden");
+
+    if (id === "student-dashboard") {
+        renderCategories();
+    }
 }
 
 function logout() {
@@ -290,6 +306,7 @@ function submitComplaint() {
 
 // RENDER STUDENT
 function renderStudent() {
+    renderCategories();
     const container = document.getElementById("student-complaints");
     container.innerHTML = "";
 
@@ -368,6 +385,13 @@ function renderAdmin() {
     <p><strong>Resolution Rate:</strong> ${resolutionRate}%</p>
     <hr>
 `;
+container.innerHTML += `
+    <h3>Manage Categories</h3>
+    <input type="text" id="new-category" placeholder="New Category Name">
+    <button onclick="addCategory()">Add Category</button>
+    <hr>
+`;
+
 
     // ====== FILTER DROPDOWN ======
     container.innerHTML += `
@@ -416,6 +440,10 @@ filtered.forEach(c => {
                 Delete
             </button>
             <select onchange="adminChangeCategory(${c.id}, this.value)">
+    ${categories.map(cat =>
+        `<option value="${cat}" ${c.category === cat ? "selected" : ""}>${cat}</option>`
+    ).join("")}
+</select>
                 <option value="Dormitory" ${c.category === "Dormitory" ? "selected" : ""}>Dormitory</option>
                 <option value="Laboratory" ${c.category === "Laboratory" ? "selected" : ""}>Laboratory</option>
                 <option value="Internet" ${c.category === "Internet" ? "selected" : ""}>Internet</option>
@@ -831,4 +859,49 @@ passwordInput.addEventListener("input", function () {
         strengthDisplay.textContent = "Strong";
         strengthDisplay.style.color = "green";
     }
+    
 });
+
+function addCategory() {
+    const input = document.getElementById("new-category");
+    const newCat = input.value.trim();
+
+    if (!newCat) {
+        alert("Enter category name.");
+        return;
+    }
+
+    if (categories.includes(newCat)) {
+        alert("Category already exists.");
+        return;
+    }
+
+    categories.push(newCat);
+    localStorage.setItem("categories", JSON.stringify(categories));
+
+    const username = newCat.toLowerCase();
+    const password = username + "123";
+
+    staffAccounts[username] = password;
+    localStorage.setItem("staffAccounts", JSON.stringify(staffAccounts));
+
+    input.value = "";
+
+    renderAdmin(); // refresh admin view
+}
+function renderCategories() {
+    const categorySelect = document.getElementById("category");
+    if (!categorySelect) return;
+
+    // Always reload categories from localStorage
+    categories = JSON.parse(localStorage.getItem("categories")) || [];
+
+    categorySelect.innerHTML = `<option value="">Select Category</option>`;
+
+    categories.forEach(cat => {
+        const option = document.createElement("option");
+        option.value = cat;
+        option.textContent = cat;
+        categorySelect.appendChild(option);
+    });
+}
